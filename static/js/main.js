@@ -1,7 +1,6 @@
 document.addEventListener('DOMContentLoaded', function () {
     const html = document.documentElement;
 
-    // --- Theme Toggle ---
     const themeToggle = document.getElementById('theme-toggle');
     if (themeToggle) {
         themeToggle.addEventListener('click', () => {
@@ -13,7 +12,7 @@ document.addEventListener('DOMContentLoaded', function () {
         html.classList.add('dark');
     }
 
-    // --- Add Event Modal ---
+    
     const addEventModal = document.getElementById('add-event-modal');
     const addEventBtn = document.getElementById('add-event-btn');
     if (addEventBtn) addEventBtn.addEventListener('click', () => addEventModal.classList.remove('hidden'));
@@ -29,7 +28,7 @@ document.addEventListener('DOMContentLoaded', function () {
         } else { alert(`Error: ${result.message}`); }
     });
 
-    // --- Edit Event Modal ---
+    
     const editEventModal = document.getElementById('edit-event-modal');
     document.querySelectorAll('.edit-event-btn').forEach(button => {
         button.addEventListener('click', async (e) => {
@@ -59,7 +58,6 @@ document.addEventListener('DOMContentLoaded', function () {
         } else { alert(`Error: ${result.message}`); }
     });
 
-    // --- Share Event Button Logic ---
     document.querySelectorAll('.share-event-btn').forEach(button => {
         button.addEventListener('click', async (e) => {
             const eventId = e.target.dataset.eventId;
@@ -71,7 +69,6 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
-    // --- QR Code / Share Modal Logic ---
     const qrCodeModal = document.getElementById('qr-code-modal');
     let reloadAfterClose = false;
     function showQrCodeModal(eventUrl, qrCodeData, eventTitle, shouldReload) {
@@ -119,20 +116,20 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // --- Reports Page Logic ---
+    
     const revenueChartCanvas = document.getElementById('revenueChart');
     if (revenueChartCanvas) {
         fetch('/api/reports-data')
             .then(response => response.json())
             .then(data => {
-                // 1. Populate Stat Cards
+                
                 document.getElementById('total-revenue').textContent = `$${data.total_revenue.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
                 document.getElementById('total-revenue-attendees').textContent = `from ${data.total_attendees} attendees`;
                 document.getElementById('avg-ticket-price').textContent = `$${data.avg_ticket_price.toFixed(2)}`;
                 document.getElementById('total-events').textContent = data.total_events;
                 document.getElementById('total-events-attendees').textContent = `with ${data.total_attendees} attendees`;
 
-                // 2. Render Revenue Bar Chart
+        
                 new Chart(revenueChartCanvas, {
                     type: 'bar',
                     data: {
@@ -142,7 +139,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     options: { scales: { y: { beginAtZero: true } } }
                 });
 
-                // 3. Render Event Status Doughnut Chart
+        
                 const statusChartCanvas = document.getElementById('statusChart');
                 new Chart(statusChartCanvas, {
                     type: 'doughnut',
@@ -152,7 +149,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     }
                 });
 
-                // 4. Populate Top Events Table
+            
                 const topEventsBody = document.getElementById('top-events-body');
                 topEventsBody.innerHTML = '';
                 data.top_events.slice(0, 5).forEach(event => {
@@ -166,7 +163,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     topEventsBody.innerHTML += row;
                 });
 
-                // 5. Populate Event Performance Table
+                
                 const performanceBody = document.getElementById('performance-body');
                 performanceBody.innerHTML = '';
                 data.event_performance.slice(0, 5).forEach(event => {
@@ -188,7 +185,7 @@ document.addEventListener('DOMContentLoaded', function () {
             });
     }
 
-    // --- Event Search Logic ---
+    
     const eventSearchInput = document.getElementById('event-search-input');
     if (eventSearchInput) {
         const eventGrid = document.getElementById('event-grid');
@@ -213,7 +210,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // --- Attendee Search Logic ---
+
     const attendeeSearchInput = document.getElementById('attendee-search-input');
     if (attendeeSearchInput) {
         const attendeeTableBody = document.getElementById('attendee-table-body');
