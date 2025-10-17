@@ -281,6 +281,10 @@ def delete_attendee(attendee_id):
     flash('Attendee deleted successfully!', 'success')
     
     return redirect(url_for('list_attendees', event_id=event_id))
+@app.route('/all-attendees')
+def all_attendees():
+    attendees = Attendee.query.order_by(Attendee.id.desc()).all()
+    return render_template('all_attendees.html', attendees=attendees)
 
 if __name__ == '__main__':
     with app.app_context():

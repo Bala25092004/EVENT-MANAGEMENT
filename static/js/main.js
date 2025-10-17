@@ -237,3 +237,29 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 });
+
+const attendeeSearchInput = document.getElementById('attendee-search-input');
+if (attendeeSearchInput) {
+    const attendeeTableBody = document.getElementById('attendee-table-body');
+    const allRows = Array.from(attendeeTableBody.querySelectorAll('tr'));
+    const noResultsRow = allRows.find(row => row.id === 'no-results-row');
+
+    attendeeSearchInput.addEventListener('keyup', () => {
+        const searchTerm = attendeeSearchInput.value.toLowerCase();
+        let visibleRows = 0;
+
+        allRows.filter(row => row.id !== 'no-results-row' && row.id !== 'no-attendees-row').forEach(row => {
+            const rowText = row.textContent.toLowerCase();
+            if (rowText.includes(searchTerm)) {
+                row.style.display = '';
+                visibleRows++;
+            } else {
+                row.style.display = 'none';
+            }
+        });
+
+        if (noResultsRow) {
+            noResultsRow.classList.toggle('hidden', visibleRows > 0 || allRows.length <= 1);
+        }
+    });
+}
