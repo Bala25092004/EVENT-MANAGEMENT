@@ -1,0 +1,66 @@
+{% extends "layout.html" %}
+{% block title %}Reports{% endblock %}
+{% block content %}
+<div class="flex justify-between items-center mb-6">
+    <div>
+        <h2 class="text-3xl font-bold text-gray-800 dark:text-white">Reports</h2>
+        <p class="text-gray-500 dark:text-gray-400 mt-1">Analyze your event performance and revenue</p>
+    </div>
+    <a href="{{ url_for('download_report') }}" target="_blank" class="bg-primary text-white px-4 py-2 rounded-lg font-semibold hover:bg-blue-700 transition-colors flex items-center gap-2">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>
+    <span>Download Report</span>
+</a>
+</div>
+
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+    <div class="bg-blue-500 text-white p-6 rounded-lg shadow-lg">
+        <p class="text-sm text-blue-100">Total Revenue</p>
+        <p class="text-3xl font-bold" id="total-revenue">$0.00</p>
+        <p class="text-xs text-blue-200 mt-1" id="total-revenue-attendees">from 0 attendees</p>
+    </div>
+    <div class="bg-green-500 text-white p-6 rounded-lg shadow-lg">
+        <p class="text-sm text-green-100">Avg Ticket Price</p>
+        <p class="text-3xl font-bold" id="avg-ticket-price">$0.00</p>
+        <p class="text-xs text-green-200 mt-1">based on total revenue</p>
+    </div>
+    <div class="bg-purple-500 text-white p-6 rounded-lg shadow-lg">
+        <p class="text-sm text-purple-100">Total Events</p>
+        <p class="text-3xl font-bold" id="total-events">0</p>
+        <p class="text-xs text-purple-200 mt-1" id="total-events-attendees">with 0 attendees</p>
+    </div>
+</div>
+
+<div class="grid grid-cols-1 lg:grid-cols-5 gap-8 mb-8">
+    <div class="lg:col-span-3 bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
+        <h3 class="text-xl font-bold text-gray-800 dark:text-white mb-4">Revenue by Event</h3>
+        <canvas id="revenueChart"></canvas>
+    </div>
+    <div class="lg:col-span-2 bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
+        <h3 class="text-xl font-bold text-gray-800 dark:text-white mb-4">Event Status Distribution</h3>
+        <canvas id="statusChart" class="max-h-64 mx-auto"></canvas>
+    </div>
+</div>
+
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+    <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
+        <h3 class="text-xl font-bold text-gray-800 dark:text-white mb-4">Top Events by Revenue</h3>
+        <table class="w-full text-sm text-left">
+            <thead class="text-xs text-gray-500 dark:text-gray-400 uppercase bg-gray-50 dark:bg-gray-700">
+                <tr><th scope="col" class="px-4 py-3">Event</th><th scope="col" class="px-4 py-3">Tickets</th><th scope="col" class="px-4 py-3">Price</th><th scope="col" class="px-4 py-3">Revenue</th></tr>
+            </thead>
+            <tbody id="top-events-body">
+                </tbody>
+        </table>
+    </div>
+    <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
+        <h3 class="text-xl font-bold text-gray-800 dark:text-white mb-4">Event Performance</h3>
+        <table class="w-full text-sm text-left">
+            <thead class="text-xs text-gray-500 dark:text-gray-400 uppercase bg-gray-50 dark:bg-gray-700">
+                <tr><th scope="col" class="px-4 py-3">Event</th><th scope="col" class="px-4 py-3">Sold/Capacity</th><th scope="col" class="px-4 py-3">Occupancy</th></tr>
+            </thead>
+            <tbody id="performance-body">
+                </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

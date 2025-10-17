@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Event Manager{% endblock %}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            colors: {
+              primary: '#3B82F6',
+              accent: '#10B981',
+            },
+            fontFamily: {
+              'sans': ['Poppins', 'sans-serif'],
+            },
+          }
+        }
+      }
+    </script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
+    <script src="{{ url_for('static', filename='js/main.js') }}" defer></script>
+</head>
+<body class="bg-gray-100 dark:bg-gray-900 font-sans text-gray-800 dark:text-gray-200">
+    <div class="flex h-screen">
+        <aside class="w-64 bg-white dark:bg-gray-800 shadow-md flex flex-col">
+            <div class="p-6 text-center">
+                <h1 class="text-2xl font-bold text-primary">🎉 EventPro</h1>
+            </div>
+            <nav class="flex-1 px-4">
+                <a href="{{ url_for('dashboard') }}" class="flex items-center px-4 py-3 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg transition-colors">Dashboard</a>
+                <a href="{{ url_for('list_events') }}" class="flex items-center px-4 py-3 mt-2 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg transition-colors">Events</a>
+                <a href="{{ url_for('reports') }}" class="flex items-center px-4 py-3 mt-2 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg transition-colors">Reports</a>
+                <a href="{{ url_for('import_csv') }}" class="flex items-center px-4 py-3 mt-2 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg transition-colors">Import CSV</a>
+            </nav>
+            <div class="p-4">
+                 <button id="theme-toggle" class="w-full px-4 py-2 bg-gray-200 dark:bg-gray-700 rounded-lg">Toggle Theme</button>
+            </div>
+        </aside>
+
+        <main class="flex-1 p-8 overflow-y-auto">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div id="flash-message" class="p-4 mb-4 text-sm rounded-lg {{ 'bg-green-100 text-green-700' if category == 'success' else 'bg-red-100 text-red-700' }}" role="alert">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            {% block content %}{% endblock %}
+        </main>
+    </div>
+</body>
+</html>

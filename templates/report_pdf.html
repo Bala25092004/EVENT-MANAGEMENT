@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>EventPro Report</title>
+    <style>
+        body { font-family: sans-serif; color: #333; }
+        h1 { color: #3B82F6; border-bottom: 2px solid #3B82F6; padding-bottom: 10px; }
+        h2 { color: #1F2937; border-bottom: 1px solid #E5E7EB; padding-bottom: 5px; margin-top: 30px; }
+        .header { text-align: center; margin-bottom: 40px; }
+        .header p { color: #6B7280; }
+        .stats { display: flex; justify-content: space-around; padding: 20px; background-color: #F9FAFB; border-radius: 8px; margin-bottom: 30px; }
+        .stat-card { text-align: center; }
+        .stat-card p { margin: 0; font-size: 1.5em; font-weight: bold; }
+        .stat-card span { font-size: 0.9em; color: #6B7280; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #E5E7EB; padding: 12px; text-align: left; }
+        th { background-color: #F3F4F6; font-weight: bold; }
+        tr:nth-child(even) { background-color: #F9FAFB; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>EventPro Performance Report</h1>
+        <p>Generated on: {{ generated_date }}</p>
+    </div>
+
+    <div class="stats">
+        <div class="stat-card">
+            <p>${{ "{:,.2f}".format(data.total_revenue) }}</p>
+            <span>Total Revenue</span>
+        </div>
+        <div class="stat-card">
+            <p>{{ data.total_events }}</p>
+            <span>Total Events</span>
+        </div>
+        <div class="stat-card">
+            <p>{{ data.total_attendees }}</p>
+            <span>Tickets Sold</span>
+        </div>
+    </div>
+
+    <h2>Top Events by Revenue</h2>
+    <table>
+        <thead>
+            <tr><th>Event</th><th>Tickets</th><th>Price</th><th>Revenue</th></tr>
+        </thead>
+        <tbody>
+            {% for event in data.top_events %}
+            <tr>
+                <td>{{ event.title }}</td>
+                <td>{{ event.tickets }}</td>
+                <td>${{ "{:.2f}".format(event.price) }}</td>
+                <td>${{ "{:,.2f}".format(event.revenue) }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <h2>Event Performance</h2>
+    <table>
+        <thead>
+            <tr><th>Event</th><th>Sold / Capacity</th><th>Occupancy</th></tr>
+        </thead>
+        <tbody>
+            {% for event in data.event_performance %}
+            <tr>
+                <td>{{ event.title }}</td>
+                <td>{{ event.sold }} / {{ event.capacity }}</td>
+                <td>{{ "{:.0f}%".format(event.occupancy) }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

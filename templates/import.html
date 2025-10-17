@@ -1,0 +1,17 @@
+{% extends "layout.html" %}
+{% block title %}Import Events from CSV{% endblock %}
+{% block content %}
+<h2 class="text-3xl font-bold mb-6 text-gray-800 dark:text-white">Import Events from CSV</h2>
+<div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg">
+    <p class="mb-4 text-gray-600 dark:text-gray-400">
+        Upload a CSV file with the headers: <strong>Event Title, Description, Date, Location, Capacity</strong>.
+        The date format should be YYYY-MM-DD.
+    </p>
+    <form action="{{ url_for('import_csv') }}" method="POST" enctype="multipart/form-data">
+        <input type="file" name="file" accept=".csv" required class="w-full p-3 mb-4 bg-gray-100 dark:bg-gray-700 rounded-lg border focus:outline-none focus:ring-2 focus:ring-primary">
+        <button type="submit" class="bg-primary text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors">
+            Upload and Import
+        </button>
+    </form>
+</div>
+{% endblock %}
