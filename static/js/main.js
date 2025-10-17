@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', function () {
     const html = document.documentElement;
 
-    
+    // --- Theme Toggle ---
     const themeToggle = document.getElementById('theme-toggle');
     if (themeToggle) {
         themeToggle.addEventListener('click', () => {
@@ -13,6 +13,7 @@ document.addEventListener('DOMContentLoaded', function () {
         html.classList.add('dark');
     }
 
+    // --- Add Event Modal ---
     const addEventModal = document.getElementById('add-event-modal');
     const addEventBtn = document.getElementById('add-event-btn');
     if (addEventBtn) addEventBtn.addEventListener('click', () => addEventModal.classList.remove('hidden'));
@@ -28,7 +29,7 @@ document.addEventListener('DOMContentLoaded', function () {
         } else { alert(`Error: ${result.message}`); }
     });
 
-    
+    // --- Edit Event Modal ---
     const editEventModal = document.getElementById('edit-event-modal');
     document.querySelectorAll('.edit-event-btn').forEach(button => {
         button.addEventListener('click', async (e) => {
@@ -58,7 +59,7 @@ document.addEventListener('DOMContentLoaded', function () {
         } else { alert(`Error: ${result.message}`); }
     });
 
-    
+    // --- Share Event Button Logic ---
     document.querySelectorAll('.share-event-btn').forEach(button => {
         button.addEventListener('click', async (e) => {
             const eventId = e.target.dataset.eventId;
@@ -70,7 +71,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
-
+    // --- QR Code / Share Modal Logic ---
     const qrCodeModal = document.getElementById('qr-code-modal');
     let reloadAfterClose = false;
     function showQrCodeModal(eventUrl, qrCodeData, eventTitle, shouldReload) {
@@ -88,7 +89,9 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
     document.getElementById('close-qr-modal-btn')?.addEventListener('click', () => {
-        qrCodeModal.classList.add('hidden');
+        if (qrCodeModal) {
+            qrCodeModal.classList.add('hidden');
+        }
         if (reloadAfterClose) {
             window.location.reload();
         }
@@ -116,20 +119,20 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    
+    // --- Reports Page Logic ---
     const revenueChartCanvas = document.getElementById('revenueChart');
     if (revenueChartCanvas) {
         fetch('/api/reports-data')
             .then(response => response.json())
             .then(data => {
-        
-                document.getElementById('total-revenue').textContent = `$${data.total_revenue.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+                // 1. Populate Stat Cards
+                document.getElementById('total-revenue').textContent = `$${data.total_revenue.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
                 document.getElementById('total-revenue-attendees').textContent = `from ${data.total_attendees} attendees`;
                 document.getElementById('avg-ticket-price').textContent = `$${data.avg_ticket_price.toFixed(2)}`;
                 document.getElementById('total-events').textContent = data.total_events;
                 document.getElementById('total-events-attendees').textContent = `with ${data.total_attendees} attendees`;
 
-            
+                // 2. Render Revenue Bar Chart
                 new Chart(revenueChartCanvas, {
                     type: 'bar',
                     data: {
@@ -139,7 +142,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     options: { scales: { y: { beginAtZero: true } } }
                 });
 
-                
+                // 3. Render Event Status Doughnut Chart
                 const statusChartCanvas = document.getElementById('statusChart');
                 new Chart(statusChartCanvas, {
                     type: 'doughnut',
@@ -149,9 +152,9 @@ document.addEventListener('DOMContentLoaded', function () {
                     }
                 });
 
-                
+                // 4. Populate Top Events Table
                 const topEventsBody = document.getElementById('top-events-body');
-                topEventsBody.innerHTML = ''; 
+                topEventsBody.innerHTML = '';
                 data.top_events.slice(0, 5).forEach(event => {
                     const row = `
                         <tr class="border-b dark:border-gray-700">
@@ -163,9 +166,9 @@ document.addEventListener('DOMContentLoaded', function () {
                     topEventsBody.innerHTML += row;
                 });
 
-            
+                // 5. Populate Event Performance Table
                 const performanceBody = document.getElementById('performance-body');
-                performanceBody.innerHTML = ''; 
+                performanceBody.innerHTML = '';
                 data.event_performance.slice(0, 5).forEach(event => {
                     const row = `
                         <tr class="border-b dark:border-gray-700">
@@ -183,5 +186,57 @@ document.addEventListener('DOMContentLoaded', function () {
                     performanceBody.innerHTML += row;
                 });
             });
+    }
+
+    // --- Event Search Logic ---
+    const eventSearchInput = document.getElementById('event-search-input');
+    if (eventSearchInput) {
+        const eventGrid = document.getElementById('event-grid');
+        const allEventCards = eventGrid.querySelectorAll('.event-card');
+        const noEventResults = document.getElementById('no-event-results');
+
+        eventSearchInput.addEventListener('keyup', () => {
+            const searchTerm = eventSearchInput.value.toLowerCase();
+            let visibleCount = 0;
+
+            allEventCards.forEach(card => {
+                const cardText = card.textContent.toLowerCase();
+                if (cardText.includes(searchTerm)) {
+                    card.style.display = 'block';
+                    visibleCount++;
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+
+            noEventResults.classList.toggle('hidden', visibleCount > 0);
+        });
+    }
+
+    // --- Attendee Search Logic ---
+    const attendeeSearchInput = document.getElementById('attendee-search-input');
+    if (attendeeSearchInput) {
+        const attendeeTableBody = document.getElementById('attendee-table-body');
+        const allRows = Array.from(attendeeTableBody.querySelectorAll('tr'));
+        const noResultsRow = allRows.find(row => row.id === 'no-results-row');
+
+        attendeeSearchInput.addEventListener('keyup', () => {
+            const searchTerm = attendeeSearchInput.value.toLowerCase();
+            let visibleRows = 0;
+
+            allRows.filter(row => row.id !== 'no-results-row' && row.id !== 'no-attendees-row').forEach(row => {
+                const rowText = row.textContent.toLowerCase();
+                if (rowText.includes(searchTerm)) {
+                    row.style.display = '';
+                    visibleRows++;
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+
+            if (noResultsRow) {
+                noResultsRow.classList.toggle('hidden', visibleRows > 0 || allRows.length <= 1);
+            }
+        });
     }
 });
